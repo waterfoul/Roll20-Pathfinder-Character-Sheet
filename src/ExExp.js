@@ -1,3 +1,8 @@
+import _ from 'underscore';
+import TAS from 'exports-loader?TAS!TheAaronSheet';
+
+import randomInteger from '../stubs/randomInteger';
+
 import {PFLog, PFConsole} from './PFLog';
 
 var rollOperator;
@@ -868,7 +873,7 @@ function sendCommand (chunks, asts, evalResults, labels) {
   }
 
   function reportError(err) {
-    ExExp.write("Error: " + err);
+    write("Error: " + err);
     return "";
   }
   //BEGIN
@@ -982,7 +987,7 @@ export function handleExpression (msg) {
   ast = parseExpression(state, null);
   //TAS.debug(ast);
   if (typeof (ast) === "string") {
-    ExExp.write("could not parse" + msg);
+    write("could not parse" + msg);
     return "";
   }
   asts.push(ast);
