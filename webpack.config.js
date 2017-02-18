@@ -1,5 +1,6 @@
+/*eslint-env node*/
+
 var path = require('path');
-var webpack = require('webpack');
 var webpackSources = require('webpack-sources');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
@@ -35,14 +36,14 @@ var webpackConfig = {
       inlineSource: '.js$'
     }),
     new HtmlWebpackInlineSourcePlugin(),
-    function RegexReplace(...args) {
-      const onPath = path.join(__dirname, 'stubs/on');
+    function RegexReplace() {
+      const stubsPath = path.join(__dirname, 'stubs');
 
-      this.plugin('compilation', function(compilation, params) {
+      this.plugin('compilation', function(compilation) {
         compilation.plugin('optimize-modules', function(modules) {
           modules.forEach((module) => {
-            if(module.context === onPath) {
-              module.source = () => new webpackSources.RawSource('module.exports = window.on');
+            if(module.context.startsWith(stubsPath)) {
+              module.source = () => new webpackSources.RawSource('module.exports = window.' + path.basename(module.context));
             } else if(module.rawRequest === 'underscore') {
               module.source = () => new webpackSources.RawSource('module.exports = window._');
             }

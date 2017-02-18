@@ -1,3 +1,14 @@
+import _ from 'underscore';
+
+import generateRowID from '../../stubs/generateRowID';
+import getSectionIDs from '../../stubs/getSectionIDs';
+import setAttrs from '../../stubs/setAttrs';
+import on from '../../stubs/on';
+import getAttrs from '../../stubs/getAttrs';
+
+import PFSheet from '../PFSheet';
+import PFLog from '../PFLog';
+
  function parseNum(num)
  {
    if (_.isUndefined(num) || num === "")
