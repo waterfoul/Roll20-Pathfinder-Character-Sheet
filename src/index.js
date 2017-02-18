@@ -1,10 +1,14 @@
 import _ from 'underscore';
 import on from '../stubs/on';
 import TAS from 'exports-loader?TAS!TheAaronSheet';
+import objectValues from 'object.values';
 
 import ExExp from './ExExp';
 import {PFLog} from './PFLog';
 import HLImport from './HLImport';
+
+objectValues.shim();
+
 /* //UNCOMMENT FOR JS LINT
 console.log('%c•!!!!!!!!!!!!!!!!!!IF YOU SEE THIS YOU FORGOT TO UNCOMMENT THE TEST CODE FOR JS LINT!!!!!!!•', 'background: linear-gradient(to right,red,white,white,red); color:black;text-shadow: 0 0 8px white;');
 var randomInteger = function () {'use strict';};
