@@ -1,4 +1,5 @@
 import _ from 'underscore';
+import objectValues from 'object.values';
 
 import getAttrs from '../../stubs/getAttrs';
 import setAttrs from '../../stubs/setAttrs';
@@ -8,6 +9,8 @@ import on from '../../stubs/on';
 
 import {PFConsole, PFLog} from '../PFLog';
 import {PFSheet, PFInventory} from '../base';
+
+objectValues.shim();
 
  function parseNum(num)
  {
@@ -73,13 +76,17 @@ import {PFSheet, PFInventory} from '../base';
    attributes.forEach(function(abScore) {
      var abName = abScore._name.substr(0,3).toUpperCase();
      var base = parseNum(abScore.attrvalue._base);
-     var modifier = parseNum(abScore.attrvalue._modified) - base;  // Modifier is the total difference between what HL is reporting as the character's base ability score and the final modified ability score
-     attrs[abName+"-base"] = base;
-     // If the modifier is positive, assume it's an enhancement bonus; otherwise, assume it's a penalty
-     if (modifier > 0)
-       attrs[abName+"-enhance"] = modifier;
-     else
-       attrs[abName+"-penalty"] = modifier;
+     if(abScore.attrvalue._text === '-') {
+       attrs[abName+"-enhance"] = parseNum(abScore.attrbonus._base) * 2;
+     } else {
+       var modifier = parseNum(abScore.attrvalue._modified) - base;  // Modifier is the total difference between what HL is reporting as the character's base ability score and the final modified ability score
+       attrs[abName+"-base"] = base;
+       // If the modifier is positive, assume it's an enhancement bonus; otherwise, assume it's a penalty
+       if (modifier > 0)
+         attrs[abName+"-enhance"] = modifier;
+       else
+         attrs[abName+"-penalty"] = modifier;
+     }
    });
  }
 

@@ -68,8 +68,4 @@ var webpackConfig = {
   }
 };
 
-if(process.env.NODE_ENV !== 'production') {
-  webpackConfig.devtool = 'inline-cheap-module-source-map';
-}
-
 module.exports = webpackConfig;

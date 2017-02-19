@@ -1,6 +1,5 @@
 import _ from 'underscore';
 import TAS from 'exports-loader?TAS!TheAaronSheet';
-import objectValues from 'object.values';
 
 import getAttrs from '../stubs/getAttrs';
 import setAttrs from '../stubs/setAttrs';
@@ -11,8 +10,6 @@ import randomInteger from '../stubs/randomInteger';
 
 import ExExp from './ExExp';
 import {PFLog} from './PFLog';
-
-objectValues.shim();
 
 /* //UNCOMMENT FOR JS LINT
 console.log('%c•!!!!!!!!!!!!!!!!!!IF YOU SEE THIS YOU FORGOT TO UNCOMMENT THE TEST CODE FOR JS LINT!!!!!!!•', 'background: linear-gradient(to right,red,white,white,red); color:black;text-shadow: 0 0 8px white;');
