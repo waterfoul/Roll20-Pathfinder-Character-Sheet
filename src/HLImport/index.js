@@ -6,7 +6,7 @@ import generateRowID from '../../stubs/generateRowID';
 import getSectionIDs from '../../stubs/getSectionIDs';
 import on from '../../stubs/on';
 
-import PFLog from '../PFLog';
+import {PFConsole, PFLog} from '../PFLog';
 import PFSheet from '../base';
 
  function parseNum(num)
@@ -1219,5 +1219,5 @@ import PFSheet from '../base';
    });
  };
  registerEventHandlers();
- console.log(PFLog.l + '   HLImport module loaded         ' + PFLog.r, PFLog.bg);
+ PFConsole.log('   HLImport module loaded         ');
  PFLog.modulecount++;

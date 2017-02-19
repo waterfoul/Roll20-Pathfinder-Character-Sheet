@@ -43,7 +43,7 @@ var webpackConfig = {
         compilation.plugin('optimize-modules', function(modules) {
           modules.forEach((module) => {
             if(module.context.startsWith(stubsPath)) {
-              module.source = () => new webpackSources.RawSource('module.exports = window.' + path.basename(module.context));
+              module.source = () => new webpackSources.RawSource('module.exports = window.' + path.basename(module.rawRequest));
             } else if(module.rawRequest === 'underscore') {
               module.source = () => new webpackSources.RawSource('module.exports = window._');
             }
@@ -67,5 +67,9 @@ var webpackConfig = {
     filename: 'index.js'
   }
 };
+
+if(process.env.NODE_ENV !== 'production') {
+  webpackConfig.devtool = 'inline-cheap-module-source-map';
+}
 
 module.exports = webpackConfig;
