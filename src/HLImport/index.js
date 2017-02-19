@@ -77,6 +77,7 @@ objectValues.shim();
      var abName = abScore._name.substr(0,3).toUpperCase();
      var base = parseNum(abScore.attrvalue._base);
      if(abScore.attrvalue._text === '-') {
+       attrs[abName+"-base"] = 10;
        attrs[abName+"-enhance"] = parseNum(abScore.attrbonus._base) * 2;
      } else {
        var modifier = parseNum(abScore.attrvalue._modified) - base;  // Modifier is the total difference between what HL is reporting as the character's base ability score and the final modified ability score
@@ -233,6 +234,56 @@ objectValues.shim();
    if (name.toLowerCase().indexOf("shield") !== -1 || name.toLowerCase().indexOf("klar") !== -1)
      return true;
    return false;
+ }
+
+ function createAttack(type, modText, mod, BAB, attack) {
+
+   var row = generateRowID(); //TODO: Figure out if replacing weapons is wanted
+
+   const repeatPrefix = "repeating_weapon_" + row;
+
+   const attrs = {};
+   const crit = (attack._crit || '').split(/[x\u00D7]/);
+   crit[0] = crit[0] || 20;
+   crit[1] = crit[1] || 2;
+
+   attrs[repeatPrefix+'_name'] = attack._name;
+   attrs[repeatPrefix+'_crit-target'] = crit[0];
+   attrs[repeatPrefix+'_crit-multiplier'] = crit[1];
+   attrs[repeatPrefix+'_attack-type'] = type;
+
+   const attacks = (attack._attack || '').split('/');
+   const damage = (attack._damage || '').split(' plus ');
+   damage[0] = damage[0].split('+');
+   damage[0][0] = damage[0][0].split('d');
+
+   attrs[repeatPrefix+'_attack'] = parseNum(attacks.pop()) - BAB - mod;
+   attrs[repeatPrefix+'_damage-dice-num'] = damage[0][0][0];
+   attrs[repeatPrefix+'_damage-die'] = damage[0][0][1] || '';
+   attrs[repeatPrefix+'_damage'] = damage[0][1] || '';
+   attrs[repeatPrefix+'_damage-ability'] = modText;
+   attrs[repeatPrefix+'_notes'] = attack.description;
+   attrs[repeatPrefix+'_type'] = attack._typetext;
+
+   if(damage[1]) {
+     attrs[repeatPrefix+'_precision_dmg_macro'] = damage[1];
+   }
+
+   let currentAttack = null;
+   let i = 2;
+
+   while((currentAttack = attacks.pop()) !== undefined) {
+     attrs[repeatPrefix+'_iterative_attack' + i + '_value'] = parseNum(currentAttack);
+     attrs[repeatPrefix+'_toggle_iterative_attack' + i] = '@{var_iterative_attack' + i + '_macro}';
+   }
+
+   setAttrs(attrs);
+ }
+
+ function importAttacks(mele, ranged, special, strMod, dexMod, BAB) {
+    _.each(mele, createAttack.bind(undefined, '@{attk-melee}', '@{STR-mod}', strMod, BAB));
+    _.each(ranged, createAttack.bind(undefined, '@{attk-ranged}', '@{DEX-mod}', dexMod, BAB));
+    _.each(special, createAttack.bind(undefined, 0, 0, 0, 0));
  }
 
  function importItems(items,resources,armorPenalties,armor,weapons)
@@ -1156,6 +1207,19 @@ objectValues.shim();
 
    attrs["class-0-bab"] = parseNum(characterObj.attack._baseattack);
 
+   const strMod = Math.floor(((
+     (attrs["STR-base"] || 0) +
+     (attrs["STR-enhance"] || 0) +
+     (attrs["STR-penalty"] || 0)
+   ) - 10) / 2);
+   const dexMod = Math.floor(((
+     (attrs["DEX-base"] || 0) +
+     (attrs["DEX-enhance"] || 0) +
+     (attrs["DEX-penalty"] || 0)
+   ) - 10) / 2);
+
+   importAttacks(arrayify(characterObj.melee.weapon), arrayify(characterObj.ranged.weapon), arrayify(characterObj.attack.special), strMod, dexMod, attrs["class-0-bab"]);
+
    // Set max hp; remove Con mod from hp first, since the sheet will add that in
    // Since the XML doesn't break this down by class, add it all to class 0
    var level = calcHitDice(characterObj.health._hitdice);
@@ -1244,7 +1308,10 @@ objectValues.shim();
            importCharacter(xmlObj.document.public.character);
          setAttrs({herolab_import:""},{silent: true});
        }
-       catch(err) {console.log(err);setAttrs({herolab_import: err.message},{silent: true});}
+       catch(err) {
+         console.error(err);
+         setAttrs({herolab_import: err.message},{silent: true});
+       }
      });
    });
  };

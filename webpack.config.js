@@ -55,7 +55,7 @@ var webpackConfig = {
         var oldSource = compilation.assets['index.html'].source;
 
         compilation.assets['index.html'].source = function() {
-          return oldSource().replace('text/javascript', 'text/worker');
+          return oldSource().replace('text/javascript', 'text/worker').replace(/<rolltemplate class=([^">]*)>/g, '<rolltemplate class="$1">');
         }
 
         callback();

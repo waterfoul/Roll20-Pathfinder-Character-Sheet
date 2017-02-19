@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "postinstall": "curl https://raw.githubusercontent.com/shdwjk/TheAaronSheet/master/TheAaronSheet.js -o node_modules/TheAaronSheet.js",
-    "build": "webpack --config webpack.config.js --optimize-minimize && unix2dos dist/index.html",
+    "build": "webpack --config webpack.config.js && unix2dos dist/index.html",
     "build-production": "webpack --config webpack.config.js --optimize-minimize --define process.env.NODE_ENV=\"'production'\" && unix2dos dist/index.html && rm dist/index.js",
     "watch": "webpack --watch --config webpack.config.js"
   },
