@@ -5792,7 +5792,7 @@ var PFEncumbrance = PFEncumbrance || (function () {
    updateModifiedSpeed: updateModifiedSpeed
  };
 }());
-var PFInventory = PFInventory || (function () {
+export const PFInventory = PFInventory || (function () {
  'use strict';
  var wornEquipmentRowsOld = ["Belt", "Body", "Chest", "Eyes", "Feet", "Hands", "Head", "Headband", "Neck", "Ring1", "Ring2", "Shoulders", "Wrist"],
  wornEquipmentRowsNew = ["Armor", "Belt", "Body", "Chest", "Eyes", "Feet", "Hands", "Head", "Headband", "Neck", "Ring1", "Ring2", "Shield", "Shoulders", "Wrist"],
@@ -7211,7 +7211,9 @@ var PFInventory = PFInventory || (function () {
    migrateWornEquipment: migrateWornEquipment,
    updateWornArmorAndShield: updateWornArmorAndShield,
    updateEquipmentLocation: updateEquipmentLocation,
-   updateAssociatedAttack: updateAssociatedAttack
+   updateAssociatedAttack: updateAssociatedAttack,
+   equipMap: equipMap,
+	 locationMap: locationMap
  };
 }());
 var PFSpellOptions = PFSpellOptions || (function () {

@@ -7,7 +7,7 @@ import getSectionIDs from '../../stubs/getSectionIDs';
 import on from '../../stubs/on';
 
 import {PFConsole, PFLog} from '../PFLog';
-import PFSheet from '../base';
+import {PFSheet, PFInventory} from '../base';
 
  function parseNum(num)
  {
@@ -265,6 +265,16 @@ import PFSheet from '../base';
          attrs[repeatPrefix+"_item-weight"] = item.weight._value;
          attrs[repeatPrefix+"_value"] = (parseFloat(item.cost._value) / parseInt(item._quantity) );
          attrs[repeatPrefix+"_description"] = item.description;
+         attrs[repeatPrefix+"_equip-type"] = PFInventory.equipMap.noEquipType;
+				 attrs[repeatPrefix+"_location"] = PFInventory.locationMap.Carried;
+
+         if(item.isGear) {
+						attrs[repeatPrefix+"_equip-type"] = PFInventory.equipMap.Gear;
+					}
+
+					if(item.isMagic) {
+						attrs[repeatPrefix+"_equip-type"] = PFInventory.equipMap.OtherMagic;
+					}
 
          if (_.contains(Object.keys(resources),item._name) && item._quantity === "1" && resources[item._name]._max !== "1")
          {
@@ -293,6 +303,7 @@ import PFSheet from '../base';
          {
            var weaponObj = weapons[_.indexOf(weaponNames,weaponCompareName)];
            attrs[repeatPrefix+"_item-wpenhance"] = parseNum(weaponObj._name.match(/\+\d+/));
+  				 attrs[repeatPrefix+"_equip-type"] = PFInventory.equipMap.Weapon;
 
            if (!_.isUndefined(weaponObj._typetext))
              attrs[repeatPrefix+"_item-dmg-type"] = weaponObj._typetext;
@@ -336,6 +347,8 @@ import PFSheet from '../base';
          {
            var armorObj = armor[_.indexOf(armorNames,armorCompareName)];
 
+           attrs[repeatPrefix+"_equip-type"] = PFInventory.equipMap.Armor;
+
            // Item is a shield
            if (nameIsShield(item._name))
            {
@@ -345,6 +358,7 @@ import PFSheet from '../base';
              attrs[repeatPrefix+"_item-acenhance"] = enhancement;
              if (!_.isUndefined(armorObj._equipped) && armorObj._equipped === "yes")
              {
+               attrs[repeatPrefix+"_location"] = PFInventory.locationMap.Shield;
                attrs[repeatPrefix+"_item-acp"] = shieldACP;
                attrs[repeatPrefix+"_item-spell-fail"] = shieldASF;
                attrs["shield3"] = item._name;
@@ -360,6 +374,7 @@ import PFSheet from '../base';
              attrs[repeatPrefix+"_item-acenhance"] = enhancement;
              if (!_.isUndefined(armorObj._equipped) && armorObj._equipped === "yes")
              {
+               attrs[repeatPrefix+"_location"] = PFInventory.locationMap.Armor;
                attrs["armor3-acp"] = attrs[repeatPrefix+"_item-acp"] = armorPenalties.ACP - shieldACP;
                attrs["armor3-spell-fail"] = attrs[repeatPrefix+"_item-spell-fail"] = armorPenalties.spellfail - shieldASF;
                if (armorPenalties.maxDex == 99)
@@ -1054,7 +1069,15 @@ import PFSheet from '../base';
    var resources = _.object(_.map(characterObj.trackedresources.trackedresource, function (resource) { return [resource._name,resource];}));
 
    // Make an array of items, both magic and mundane
-   var items = _.reject(arrayify(characterObj.magicitems.item || {}).concat(arrayify(characterObj.gear.item || {})),function(item) { return _.isUndefined(item._name); });
+   var gear = _.map(arrayify(characterObj.gear.item || {}), function (item) {
+     item.isGear = true;
+     return item
+   });
+   var magicItems = _.map(arrayify(characterObj.magicitems.item || {}), function (item) {
+     item.isMagic = true;
+     return item
+   });
+	 var items = _.reject(magicItems.concat(gear), function(item) { return _.isUndefined(item._name); });
 
    // "Specials" could include items, so we need to filter them out
    var itemNames = _.map(items, function(obj) { return obj._name; });
