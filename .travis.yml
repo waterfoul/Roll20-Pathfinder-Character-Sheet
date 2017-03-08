@@ -1,0 +1,17 @@
+language: node_js
+node_js:
+- '6'
+branches:
+  only:
+  - master
+env:
+- DATABASE_URL=postgres://travis@localhost/vynl_test
+script:
+- npm run build
+deploy:
+  provider: releases
+  api_key:
+    secure: ryfa1J8zTv5ZUwz6BS8krCgJ4Oug+TCTKeH7pe0wbAtw0kIxMuvu+hL4CBszvgXSblGng2NaZVhZfOQ7jAZLoleIXU8jNtpGxx2WECl50SqCLoxVeeJNGwz1QjekEy9qT6hH5T3tvOfqHBNOIn1RXjA4flcvd3bbXrHzOdEBLFLEtz4Nwr8ZqF+tr9d5RK4FiTX2cfCPwKgDAx0jVG553C7XzhOQi5AsxX3pC4jmymEDKGAoo+qwx/LFne8h/fI675qClFX9C2ZWTrXmwYbmRwnqUVsW14U2MrDJYn0kAsJfbHGpbA21P5XzCzejjJJyFGtkShmnqSkjBiZyHF7I721lpNrxgOoaWY3juZtifWxMv9LnbHBb/VZYE/NidjF6tjQzymADYPLgXV9Q3mWN6pP3qXKP7DuJxRlKJXfTpv5UbnS7msXJx1XTq7u0fExUkTYZVibQOSinQlmaAfZ+hAz6u9fZCP7i424cthZNNNuI+8Op3DxZF1sFw26G4VaIQ+vmXFpUftlOzFdj4xNE71bRzOtiK3Tu4yCCoChXyPwAPxDRR3jzo+7coJXNVinn2CBN9JrbL0p8H5qRA3CVhNV8f/k8P0s6rabZAgAtXxL7VObeHxGBpS4JXks2PkEnKWBQwBnWuUY7+gx63IqDzRC9sRiBoUkOhAdOCYr3/zs=
+  file: dist/index.html
+  on:
+    repo: waterfoul/Roll20-Pathfinder-Character-Sheet
