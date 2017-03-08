@@ -8,6 +8,7 @@ env:
 - DATABASE_URL=postgres://travis@localhost/vynl_test
 script:
 - npm run build
+
 deploy:
   provider: releases
   api_key:
@@ -15,3 +16,4 @@ deploy:
   file: dist/index.html
   on:
     repo: waterfoul/Roll20-Pathfinder-Character-Sheet
+    tags: true
